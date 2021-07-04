@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2020. WOSHIZHAZHA120
+ * Copyright (c) 2020 - 2021. WOSHIZHAZHA120
  */
 
 namespace GDCN;
@@ -12,38 +12,47 @@ namespace GDCN;
 class GDObject
 {
     /**
+     * @var bool
+     */
+    protected static bool $useKey = true;
+
+    /**
+     * @return static
+     */
+    public static function dontUseKey(): static
+    {
+        static::$useKey = false;
+        return (new static);
+    }
+
+    /**
      * @param array $object
      * @param string $glue
-     * @param bool $useKey
-     * @param bool $ksort
      * @return string
      */
-    public static function merge(array $object, string $glue, bool $useKey = true, bool $ksort = true): string
+    public static function merge(array $object, string $glue): string
     {
-        if ($ksort) {
-            ksort($object);
-        }
-
+        $objects = [];
         foreach ($object as $key => $value) {
-            $objects[] = implode($glue, $useKey ? [$key, $value] : [$value]);
+            $objects[] = implode($glue, static::$useKey ? [$key, $value] : [$value]);
         }
 
-        return implode($glue, $objects ?? []);
+        return implode($glue, $objects);
     }
 
     /**
      * @param string $object
      * @param string $delimiter
-     * @param bool $useKey
      * @return array
      */
-    public static function split(string $object, string $delimiter, bool $useKey = true): array
+    public static function split(string $object, string $delimiter): array
     {
         $objects = explode($delimiter, $object);
-
         for ($i = 0, $iMax = count($objects); $i < $iMax; $i += 2) {
-            if ($useKey) {
-                $result[$objects[$i]] = $objects[$i + 1];
+            if (static::$useKey) {
+                if (!empty($objects[$i + 1])) {
+                    $result[$objects[$i]] = $objects[$i + 1];
+                }
             } else {
                 $result[] = $objects[$i + 1];
             }

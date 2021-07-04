@@ -1,7 +1,6 @@
 {
     "name": "gdcn/gd-object",
     "description": "Geometry Dash Object",
-    "version": "1.0.0",
     "type": "library",
     "license": "MIT",
     "authors": [
